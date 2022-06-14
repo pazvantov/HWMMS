@@ -1,6 +1,7 @@
 #include<stdio.h>
 
 int binarySearch(int *array, size_t n, int key);
+int mybSearch(int *array, size_t l, size_t r, int key);
 
 int main()
 {
@@ -14,18 +15,27 @@ int main()
 
 int binarySearch(int *array, size_t n, int key)
 {
-    printf("n = %lu\n",n);
-    if(array[n/2] == key)
+    return mybSearch(array,0,n-1,key);
+    
+}
+
+int mybSearch(int *array, size_t l, size_t r, int key)
+{
+    if(r >= l)
     {
-        return n/2;
+        int mid =l + (r-l) / 2;
+        if(array[mid] == key)
+        {
+            return mid;
+        }
+
+        if(array[mid] > key)
+        {
+            return mybSearch(array, l, mid - 1, key);
+        }
+
+            return mybSearch(array , mid + 1, r, key);
     }
-    else if(array[n/2] > key)
-    {
-        return binarySearch(array, n/2, key);
-    }
-    else if(array[n/2-1] < key)
-    {
-        return n/2 + binarySearch(array + n/2, n/2 , key);
-    }
+    
     return -1;
 }
