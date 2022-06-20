@@ -49,7 +49,6 @@ double randReal(double min, double max)
 
 void randName(char* name)
 {
-    srand(time(NULL));
     int i = 0;
     int numbofsml;
     for(int j=0;j<2;j++)

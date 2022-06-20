@@ -19,7 +19,9 @@ typedef struct node
 }node_t;
 
 void push(node_t** list, Book data);
-void print_listR(node_t* list);
+void mergeSort(node_t** list);
+void frontBackSplit(node_t* list, node_t** front, node_t** back);
+node_t* sortedMerge(node_t* listA, node_t* listB);
 
 int main(int argc, char** argv)
 {
@@ -37,7 +39,17 @@ int main(int argc, char** argv)
         push(&head,data);
     }
     fclose(inputFptr);
-    print_listR(head);
+    mergeSort(&head);
+    FILE* outputFptr = fopen(output,"w");
+    node_t* temp = head;
+    while(temp != NULL)
+    {
+        fprintf(outputFptr,"%20s %20s %5d %5.2lf\n ",
+            temp->data.Author, temp->data.Title,
+            temp->data.Pages,temp->data.Price);
+            temp = temp->next;
+    }
+    fclose(outputFptr);
     return 0;
 }
 
@@ -51,11 +63,47 @@ void push(node_t** list, Book data){
     *list = n;
 }
 
-void print_listR(node_t* list){
-    if (list == NULL){
+// merge sort
+node_t* sortedMerge(node_t* listA, node_t* listB){
+    node_t* sorted = NULL;
+    if (listA == NULL){
+        return listB;
+    }
+    if (listB == NULL){
+        return listA;
+    }
+    if (strcmp(listB->data.Author,listA->data.Author) > 0){
+        sorted = listA;
+        sorted->next = sortedMerge(listA->next, listB);
+    } else {
+        sorted = listB;
+        sorted->next = sortedMerge(listA, listB->next);
+    }
+    return sorted;
+}
+
+void frontBackSplit(node_t* list, node_t** front, node_t** back){
+    node_t* slow = list;
+    node_t* fast = list->next;
+    while (fast != NULL){
+        fast = fast->next;
+        if (fast  != NULL){
+            slow = slow->next;
+            fast = fast->next;
+        }
+    }
+    *front = list;
+    *back = slow->next;
+    slow->next = NULL;
+}
+
+void mergeSort(node_t** list){
+    if (*list == NULL || (*list)->next == NULL){
         return;
     }
-    printf("%20s %20s %5d %5.2lf\n ", list->data.Author, list->data.Title,
-                                        list->data.Pages,list->data.Price);
-    print_listR(list->next);
+    node_t *front = NULL, *back = NULL;
+    frontBackSplit(*list, &front, &back);
+    mergeSort(&front);
+    mergeSort(&back);
+    *list = sortedMerge(front, back);
 }

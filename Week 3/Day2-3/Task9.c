@@ -37,4 +37,5 @@ void SPRINTF(char* szBuffer, char* szPattern, char** args)
         }
         szBuffer[buffcnt++] = szPattern[patterncnt++];
     }
+    szBuffer[buffcnt] = '\0';
 }
