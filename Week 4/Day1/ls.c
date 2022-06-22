@@ -39,9 +39,6 @@ int main(int argc, char** argv)
                 }
                 putchar('\n');
                 break;
-            default:
-                printf("Genis\n");
-
         }
     }
     closedir(pDir);
